@@ -1,3 +1,4 @@
+
 -- SQL Retail Sales Analysis 
 
 -- Create database
@@ -121,7 +122,7 @@ WHERE sale_date = '2022-11-05';
 
 SELECT * FROM retail_sales 
       WHERE category = 'Clothing' 
-	  AND DATE_FORMAT(sale_date, '%Y-%m') = '2022-11' 
+      AND DATE_FORMAT(sale_date, '%Y-%m') = '2022-11' 
       AND quantity >= 4;
 
 
@@ -176,8 +177,6 @@ WHERE rrank = 1
 
 -- ORDER BY 1, 3 DESC
 
-
-
 -- Q.8 Write a SQL query to find the top 5 customers based on the highest total sales 
 
 SELECT 
@@ -215,5 +214,56 @@ SELECT
 FROM hourly_sale
 GROUP BY shift
 
--- End of project
+-- Here are some additional KPIs I added afterwards.
 
+-- Sales Contribution by Gender: Analyze the contribution of sales by gender.
+SELECT 
+    gender,
+    SUM(total_sale) AS total_sales
+FROM retail_sales
+GROUP BY gender;
+
+-- Sales Trend Over Time: Analyze monthly sales trends.
+SELECT 
+    YEAR(sale_date) AS year,
+    MONTH(sale_date) AS month,
+    SUM(total_sale) AS monthly_sales
+FROM retail_sales
+GROUP BY year, month
+ORDER BY year, month;
+
+-- Customer Lifetime Value (CLV)
+SELECT 
+    customer_id,
+    SUM(total_sale) AS lifetime_value
+FROM retail_sales
+GROUP BY customer_id
+ORDER BY lifetime_value DESC;
+
+-- Average Order Value (AOV)
+SELECT 
+    AVG(total_sale) AS average_order_value
+FROM retail_sales;
+
+-- Sales by Day of the Week
+SELECT 
+    DAYNAME(sale_date) AS day_of_week,
+    SUM(total_sale) AS total_sales
+FROM retail_sales
+GROUP BY day_of_week
+ORDER BY FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+
+-- Revenue per Customer Age Group
+SELECT 
+    CASE
+        WHEN age < 20 THEN 'Under 20'
+        WHEN age BETWEEN 20 AND 29 THEN '20-29'
+        WHEN age BETWEEN 30 AND 39 THEN '30-39'
+        WHEN age BETWEEN 40 AND 49 THEN '40-49'
+        ELSE '50 and above'
+    END AS age_group,
+    SUM(total_sale) AS total_sales
+FROM retail_sales
+GROUP BY age_group;
+
+-- End of project

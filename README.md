@@ -181,7 +181,66 @@ SELECT
 FROM hourly_sale
 GROUP BY shift
 ```
+*Here are some additional KPIs I added afterwards.*
 
+**Sales Contribution by Gender: Analyze the contribution of sales by gender.**
+```SQL
+SELECT 
+    gender,
+    SUM(total_sale) AS total_sales
+FROM retail_sales
+GROUP BY gender;
+```
+
+**Sales Trend Over Time: Analyze monthly sales trends.**
+```SQL
+SELECT 
+    YEAR(sale_date) AS year,
+    MONTH(sale_date) AS month,
+    SUM(total_sale) AS monthly_sales
+FROM retail_sales
+GROUP BY year, month
+ORDER BY year, month;
+```
+
+**Customer Lifetime Value (CLV)**
+```SQL
+SELECT 
+    customer_id,
+    SUM(total_sale) AS lifetime_value
+FROM retail_sales
+GROUP BY customer_id
+ORDER BY lifetime_value DESC;
+```
+-- Average Order Value (AOV)
+```SQL
+SELECT 
+    AVG(total_sale) AS average_order_value
+FROM retail_sales;
+```
+**Sales by Day of the Week**
+```SQL
+SELECT 
+    DAYNAME(sale_date) AS day_of_week,
+    SUM(total_sale) AS total_sales
+FROM retail_sales
+GROUP BY day_of_week
+ORDER BY FIELD(day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+```
+**Revenue per Customer Age Group**
+```SQL
+SELECT 
+    CASE
+        WHEN age < 20 THEN 'Under 20'
+        WHEN age BETWEEN 20 AND 29 THEN '20-29'
+        WHEN age BETWEEN 30 AND 39 THEN '30-39'
+        WHEN age BETWEEN 40 AND 49 THEN '40-49'
+        ELSE '50 and above'
+    END AS age_group,
+    SUM(total_sale) AS total_sales
+FROM retail_sales
+GROUP BY age_group;
+```
 ## Findings
 
 - **Customer Demographics**: The dataset includes customers from various age groups, with sales distributed across different categories such as Clothing and Beauty.
